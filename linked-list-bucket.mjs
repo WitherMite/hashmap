@@ -37,17 +37,10 @@ export default class LinkedListBucket {
     }
     return null;
   }
-  insertAt(value, index) {
-    let currentNode = this.head;
-    let nextNode = currentNode.next;
-    for (let i = 0; i < index - 1; i++) {
-      currentNode = nextNode;
-      nextNode = nextNode.next;
-    }
-    currentNode.next = new Node(value, nextNode);
-    this.size++;
-  }
   removeAt(index) {
+    if (typeof index !== "number" || index < 0 || index >= this.size) return;
+    this.size--;
+    if (index === 0) return (this.head = this.head.next);
     let currentNode = this.head;
     let nextNode = currentNode.next;
     for (let i = 0; i < index - 1; i++) {
@@ -55,6 +48,5 @@ export default class LinkedListBucket {
       nextNode = nextNode.next;
     }
     currentNode.next = nextNode.next;
-    this.size--;
   }
 }

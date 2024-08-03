@@ -19,3 +19,16 @@ test.set("dog", "black");
 console.log(test);
 
 test.set("moon", "silver");
+console.log(test.get("jacket"));
+console.log(test.has("dog"));
+console.log(test.has("ant"));
+
+console.log(test.remove("dog"));
+console.log(test.has("dog"));
+console.log(test.length());
+console.log(test.keys());
+console.log(test.values());
+console.log(test.entries());
+test.clear();
+console.log(test.length());
+console.log(test.entries());
