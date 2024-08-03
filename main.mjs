@@ -17,3 +17,5 @@ test.set("lion", "golden");
 test.set("dog", "black");
 
 console.log(test);
+
+test.set("moon", "silver");

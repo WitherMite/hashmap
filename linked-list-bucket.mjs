@@ -29,10 +29,6 @@ export default class LinkedListBucket {
     }
     return currentNode;
   }
-  containsKey(key) {
-    const found = this.findKey(key);
-    return found === 0 ? true : !!found;
-  }
   findKey(key) {
     let currentNode = this.head;
     for (let i = 0; i < this.size; i++) {
