@@ -21,11 +21,18 @@ console.log(test);
 
 test.set("moon", "silver");
 console.log(test.length());
+console.log(test.remove("dog"));
+console.log(test.remove("moon"));
+console.log(test.remove("lion"));
+console.log(test.remove("ice cream"));
+console.log(test.remove("frog"));
+console.log(test.remove("hat"));
+console.log(test.remove("apple"));
+console.log(test.length());
 // console.log(test.get("jacket"));
 // console.log(test.has("dog"));
 // console.log(test.has("ant"));
 
-// console.log(test.remove("dog"));
 // console.log(test.has("dog"));
 // console.log(test.length());
 // console.log(test.keys());

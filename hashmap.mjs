@@ -24,7 +24,7 @@ export default class HashMap {
 
   #buckets = [];
   #defaultSize;
-  #capacity = 0;
+  #entryCount = 0;
   constructor(load = 0.75, size = 16) {
     this.loadFactor = load;
     this.#defaultSize = size;
@@ -53,7 +53,7 @@ export default class HashMap {
 
     const prevBuckets = this.#buckets;
     this.#buckets = newBuckets;
-    this.#capacity = 0; // calling set when copying counts them all again
+    this.#entryCount = 0; // calling set when copying counts them all again
 
     HashMap.#visitAll(prevBuckets, (entry) => {
       this.set(...entry.content);
@@ -61,10 +61,21 @@ export default class HashMap {
   }
   #handleNewEntry() {
     const overCapacity =
-      ++this.#capacity / this.#buckets.length > this.loadFactor;
+      ++this.#entryCount / this.#buckets.length > this.loadFactor;
     if (overCapacity) {
       console.log("over capacity");
       this.#changeSize(this.#buckets.length * 2);
+    }
+  }
+  #handleRemoveEntry() {
+    --this.#entryCount;
+    const halfLength = this.#buckets.length / 2;
+    if (halfLength < this.#defaultSize) return;
+
+    const underPrevCapacity = this.#entryCount / halfLength <= this.loadFactor;
+    if (underPrevCapacity) {
+      console.log("under capacity");
+      this.#changeSize(halfLength);
     }
   }
 
@@ -103,7 +114,7 @@ export default class HashMap {
     const bucket = this.#getBucket(key);
     const index = bucket.findKey(key);
     if (index !== null) {
-      this.#capacity--; // change to handleRemoveEntry and shrink buckets
+      this.#handleRemoveEntry();
       bucket.removeAt(index);
       return true;
     }
@@ -111,11 +122,11 @@ export default class HashMap {
   }
   length() {
     console.log(this.#buckets.length);
-    return this.#capacity;
+    return this.#entryCount;
   }
   clear() {
     this.#buckets = [];
-    this.#capacity = 0;
+    this.#entryCount = 0;
     HashMap.#createBuckets(this.#buckets, this.#defaultSize);
   }
   keys() {
