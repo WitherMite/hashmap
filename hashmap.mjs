@@ -13,8 +13,7 @@ export default class HashMap {
     buckets.forEach((bucket) => {
       if (bucket.size === 0) return;
       let node = bucket.head;
-      while (true) {
-        if (node === null) return;
+      while (node !== null) {
         all.push(callback(node));
         node = node.next;
       }
@@ -53,7 +52,7 @@ export default class HashMap {
 
     const prevBuckets = this.#buckets;
     this.#buckets = newBuckets;
-    this.#entryCount = 0; // calling set when copying counts them all again
+    this.#entryCount = 0;
 
     HashMap.#visitAll(prevBuckets, (entry) => {
       this.set(...entry.content);
