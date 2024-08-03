@@ -8,7 +8,7 @@ export default class HashMap {
       arr.push(new LinkedListBucket());
     }
   }
-  static #reduceAll(buckets, callback) {
+  static #visitAll(buckets, callback) {
     const all = [];
     buckets.forEach((bucket) => {
       if (bucket.size === 0) return;
@@ -47,12 +47,24 @@ export default class HashMap {
       throw new Error("Trying to access index out of bound", { cause: index });
     } else return this.#buckets[index];
   }
+  #changeSize(size) {
+    const newBuckets = [];
+    HashMap.#createBuckets(newBuckets, size);
+
+    const prevBuckets = this.#buckets;
+    this.#buckets = newBuckets;
+    this.#capacity = 0; // calling set when copying counts them all again
+
+    HashMap.#visitAll(prevBuckets, (entry) => {
+      this.set(...entry.content);
+    });
+  }
   #handleNewEntry() {
     const overCapacity =
       ++this.#capacity / this.#buckets.length > this.loadFactor;
     if (overCapacity) {
       console.log("over capacity");
-      // grow
+      this.#changeSize(this.#buckets.length * 2);
     }
   }
 
@@ -98,21 +110,21 @@ export default class HashMap {
     return false;
   }
   length() {
+    console.log(this.#buckets.length);
     return this.#capacity;
   }
   clear() {
-    const empty = [];
-    HashMap.#createBuckets(empty, this.#defaultSize);
-    this.#buckets = empty;
+    this.#buckets = [];
     this.#capacity = 0;
+    HashMap.#createBuckets(this.#buckets, this.#defaultSize);
   }
   keys() {
-    return HashMap.#reduceAll(this.#buckets, (entry) => entry.content[0]);
+    return HashMap.#visitAll(this.#buckets, (entry) => entry.content[0]);
   }
   values() {
-    return HashMap.#reduceAll(this.#buckets, (entry) => entry.content[1]);
+    return HashMap.#visitAll(this.#buckets, (entry) => entry.content[1]);
   }
   entries() {
-    return HashMap.#reduceAll(this.#buckets, (entry) => entry.content);
+    return HashMap.#visitAll(this.#buckets, (entry) => entry.content);
   }
 }
